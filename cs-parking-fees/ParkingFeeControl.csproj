@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ParkingFeeControl</RootNamespace>
+    <AssemblyName>ParkingFeeControl</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Unity Engine References -->
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(MANAGED_DLLS_PATH)\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Entities">
+      <HintPath>$(MANAGED_DLLS_PATH)\Unity.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>$(MANAGED_DLLS_PATH)\Unity.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>$(MANAGED_DLLS_PATH)\Unity.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>$(MANAGED_DLLS_PATH)\Unity.Burst.dll</HintPath>
+    </Reference>
+    
+    <!-- Cities Skylines 2 Game References -->
+    <Reference Include="Game">
+      <HintPath>$(MANAGED_DLLS_PATH)\Game.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.Core">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.Logging">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.Localization">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.Localization.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.IO.AssetDatabase">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.IO.AssetDatabase.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.UI">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.UI.Binding">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.UI.Binding.dll</HintPath>
+    </Reference>
+    <Reference Include="Colossal.AssetPipeline">
+      <HintPath>$(MANAGED_DLLS_PATH)\Colossal.AssetPipeline.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="parking-data.json" />
+  </ItemGroup>
+
+</Project>

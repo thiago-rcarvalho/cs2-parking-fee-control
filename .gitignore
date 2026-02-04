@@ -1,0 +1,46 @@
+# Build outputs
+*/bin/
+*/obj/
+*.pdb
+*.exe
+**/ui/output/**
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.local.props
+local.envs
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keep lib folder with DLLs (needed for building)
+# but ignore if you want to not commit DLLs
+lib/*.dll
+
+# Package files
+*.nupkg
+*.snupkg
+packages/
+paket-files/
+
+# Test files
+TestResults/
+*.trx
+
+# Build logs
+*.log
+build.log
+
+# Meta files
+*.meta
