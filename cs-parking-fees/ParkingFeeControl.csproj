@@ -107,8 +107,6 @@
 	<!--ui-related commands-->
 	<Target Name="BuildUIAll" AfterTargets="AfterBuild"  Condition=" '$(OS)' == 'Windows_NT' ">
 		<CallTarget Targets="BuildUI" />
-		<CallTarget Targets="CopyUIFiles" />
-		<CallTarget Targets="CleanUIOutput" />
 	</Target>
 	<Target Name="BuildUI">
 		<Exec Command="npm run build" WorkingDirectory="$(ProjectDir)\ui" />

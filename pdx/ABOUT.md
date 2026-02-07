@@ -53,4 +53,4 @@ Please file an issue on:
 Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
 
 ## Known bugs
-* Not showing some buildings names correctly on parking fees screen
+* Not displaying the name and thumbnails of a small percentage of buildings correctly on the fees screen
