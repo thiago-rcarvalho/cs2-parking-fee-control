@@ -3,6 +3,8 @@
 
 Parking Fee Control is a mod that lets you manage parking fees for buildings, helping you keep rates always up-to-date and exactly as you want!
 
+After installing it, you'll see a Parking icon on the top-left side of the screen. Click it to access the fees screen.
+
 Features:
 * Customize fees for multiple parking lots (values range from 0 to 50). Fees can be applied instantly via the configuration panel and also periodically, as configured.
 * Periodically updates the fees for parking lots added to the map during gameplay, keeping everything consistent.

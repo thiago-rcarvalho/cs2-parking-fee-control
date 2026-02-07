@@ -12,6 +12,8 @@
 
 Parking Fee Control is a mod that lets you manage parking fees for buildings, helping you keep rates always up-to-date and exactly as you want!
 
+After installing it, you'll see a Parking icon on the top-left side of the screen. Click it to access the fees screen.
+
 Features:
 * Customize fees for multiple parking lots (values range from 0 to 50). Fees can be applied instantly via the configuration panel and also periodically, as configured.
 * Periodically updates the fees for parking lots added to the map during gameplay, keeping everything consistent.
@@ -57,7 +59,10 @@ Thank you for your work in the CS2 community ❤️
 # Bugs and suggestions
 Please file an issue on:
 
-Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control</LongDescription>
+Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
+
+## Known bugs
+* Not showing some buildings names correctly on parking fees screen</LongDescription>
   <!--Thumbnail-->
   <Thumbnail Value="../pdx/pfc-logo-resized.png" />
   <!--Screenshot, can be set multiple times-->
@@ -69,14 +74,14 @@ Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control</Lon
   <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="" />
   <!--Version of the mod-->
-  <ModVersion Value="0.1.0" />
+  <ModVersion Value="0.1.1" />
   <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.5.*" />
   <!--Dependency for the mod, can be set multiple times-->
   <Dependency Id="" />
   <!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
   <!--<ChangeLog Value="" />-->
-  <ChangeLog>0.1 - Initial BETA release</ChangeLog>
+  <ChangeLog>0.1.1 - Improved thumbnails and display name detection</ChangeLog>
   <!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon, buymeacoffee, kofi, crowdin, gitlab-->
   <ExternalLink Type="github" Url="https://github.com/thiago-rcarvalho/cs2-parking-fee-control" />
   <ExternalLink Type="kofi" Url="https://ko-fi.com/stealthcold" />
