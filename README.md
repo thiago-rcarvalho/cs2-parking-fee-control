@@ -26,26 +26,19 @@ You can add compatibility with other mods by editing `cs-parking-fees/parking-da
 
 
 
-## Basic Build Instructions
+## Before Build this mod
 
-1. **Configure your environment:**
-	 - Create a file named `local.envs` in the project root (same folder as `compile.sh`). Example:
-		 ```env
-		 GAME_MODS_DIR="/path/to/your/Mods/ParkingFeeControl"
-		 ```
-	 - This file is ignored by git and allows each user to set their own mod output path.
-	 - For C# dependencies, if you need to override library paths, create or edit `cs-parking-fees/Directory.Build.local.props`:
-		 ```xml
-		 <Project>
-			 <PropertyGroup>
-				 <MANAGED_DLLS_PATH>/path/to/your/libs</MANAGED_DLLS_PATH>
-			 </PropertyGroup>
-		 </Project>
-		 ```
-
-2. **Build the mod:**
-	 - Run:
-		 ```bash
-		 ./compile.sh
-		 ```
-	 - This will build both the UI and backend, and copy the output to your configured `GAME_MODS_DIR`.
+**Configure your environment:**
+	- Create a file named `local.envs` in the project root (same folder as `compile.sh`). Example:
+		```env
+		GAME_MODS_DIR="/path/to/your/Mods/ParkingFeeControl"
+		```
+	- This file is ignored by git and allows each user to set their own mod output path.
+	- For C# dependencies, if you need to override library paths, create or edit `cs-parking-fees/Directory.Build.local.props`:
+		```xml
+		<Project>
+			<PropertyGroup>
+				<MANAGED_DLLS_PATH>/path/to/your/libs</MANAGED_DLLS_PATH>
+			</PropertyGroup>
+		</Project>
+		```

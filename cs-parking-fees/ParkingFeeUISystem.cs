@@ -359,7 +359,7 @@ namespace ParkingFeeControl.UI
                     var prefabId = new PrefabID(prefabType, prefabName);
                     if (_prefabSystem.TryGetPrefab(prefabId, out var prefabBase))
                     {
-                        // Use the same method as FindIt-CSII: GetTitleAndDescription from PrefabUISystem
+                        // TODO: Improve this method. It's not loading correctly for some prefabs.
                         _prefabUISystem.GetTitleAndDescription(_prefabSystem.GetEntity(prefabBase), out var titleId, out var _);
 
                         if (GameManager.instance.localizationManager.activeDictionary.TryGetValue(titleId, out var name))

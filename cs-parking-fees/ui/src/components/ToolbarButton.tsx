@@ -46,7 +46,7 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({ onClick }) => {
   const [hovered, setHovered] = React.useState(false);
 
   const handleClick = () => {
-    console.log('[ParkingFeeControl] Button clicked!');
+    //console.log('[ParkingFeeControl] Button clicked!');
     onClick();
   };
 

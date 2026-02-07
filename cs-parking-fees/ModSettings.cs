@@ -11,7 +11,7 @@ namespace ParkingFeeControl
     /// Settings for Parking Fee Control mod that are managed via in-game UI.
     /// These are NOT persisted to parking-config.json.
     /// </summary>
-    [FileLocation($"ModsSettings/{nameof(ParkingFeeControl)}/Settings")]
+    [FileLocation("ModsSettings/ParkingFeeControl/Settings")]
     [SettingsUITabOrder("Settings")]
     [SettingsUIGroupOrder("General")]
     [SettingsUIShowGroupName("General")]
@@ -26,7 +26,7 @@ namespace ParkingFeeControl
             Enabled = true;
             DebugLogging = false;
             UpdateFrequencyMinutes = UpdateFrequency.Minutes5;
-            IgnoreTag = IgnoreTagType.Nofee;
+            IgnoreTag = IgnoreTagType.Npf;
         }
 
         [SettingsUISection("Settings", "General")]
@@ -39,7 +39,7 @@ namespace ParkingFeeControl
         public UpdateFrequency UpdateFrequencyMinutes { get; set; } = UpdateFrequency.Minutes5;
 
         [SettingsUISection("Settings", "General")]
-        public IgnoreTagType IgnoreTag { get; set; } = IgnoreTagType.Nofee;
+        public IgnoreTagType IgnoreTag { get; set; } = IgnoreTagType.Npf;
 
         /// <summary>
         /// Get update frequency in seconds.
@@ -71,10 +71,10 @@ namespace ParkingFeeControl
         {
             return IgnoreTag switch
             {
-                IgnoreTagType.Nofee => "[nofee]",
                 IgnoreTagType.Npf => "[npf]",
+                IgnoreTagType.Nofee => "[nofee]",
                 IgnoreTagType.PipeNpf => "|npf|",
-                _ => "[nofee]"
+                _ => "[npf]"
             };
         }
 
@@ -97,8 +97,8 @@ namespace ParkingFeeControl
         /// </summary>
         public enum IgnoreTagType
         {
-            Nofee,
             Npf,
+            Nofee,
             PipeNpf
         }
     }

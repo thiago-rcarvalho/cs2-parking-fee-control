@@ -95,7 +95,10 @@ namespace ParkingFeeControl
 
                 ModLogger.Info("✓ Systems registered successfully!");
                 ModLogger.Info("✓ Parking Fee Control mod loaded successfully!");
-                ModLogger.Info($"✓ Default parking fee set to: ${Config.Categories.FirstOrDefault(c => c.Type == "car")?.DefaultFee ?? 10}");
+                foreach (var cat in Config.Categories)
+                {
+                    ModLogger.Info($"✓ Default {cat.Type} parking fee set to: ${cat.DefaultFee}");
+                }
                 ModLogger.Info("============================================");
             }
             catch (System.Exception ex)

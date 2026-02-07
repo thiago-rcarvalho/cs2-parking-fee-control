@@ -4,6 +4,7 @@
 *.pdb
 *.exe
 **/ui/output/**
+*/Library/**
 
 # User-specific files
 *.user

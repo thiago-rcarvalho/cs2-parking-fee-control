@@ -1,3 +1,5 @@
+# About
+⚠️ Currently in BETA ⚠️ 
 
 Parking Fee Control is a mod that lets you manage parking fees for buildings, helping you keep rates always up-to-date and exactly as you want!
 
@@ -12,15 +14,13 @@ Features:
 
 Parking Fee Control is currently in BETA. Bugs may occur; fee application performance is still being validated, but so far no bottlenecks have been observed.
 
-NOTE: Since it was difficult to find an automatic way to detect parking lot mods, I chose a simpler approach: mods are mapped directly in the code. If your favorite parking mod is not yet supported, just open a pull request or an issue on the project's GitHub. The README contains all necessary information.
+## Technical Notes
+1. Since it was difficult to find an automatic way to detect parking lot mods, I chose a simpler approach: mods are mapped directly in the code. If your favorite parking mod is not yet supported, just open a pull request or an issue on the project's GitHub. The README contains all necessary information.
+2. Periodic updates may be removed in the future if I find a way to intercept the placement of parking lots and change the default fee before the player places them on the map. Still working on it;
 
 ----
 
-Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
-
-----
-
-Compatible MODS:
+# Compatible MODS
 - **Parking Lots By Dome** by De Magistris
 - **Overground Parking By Dome** by De Magistris
 - **Underground Parkings 01 / 02** by Gruny
@@ -38,8 +38,17 @@ Compatible MODS:
 - **Big BicycleParking** by 2nPlace
 
 ----
-
+# Thank you
 This mod was developed using as reference the excellent mods from these amazing modders:
-yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ
+*yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ, Triton Supreme*
 
 Thank you for your work in the CS2 community ❤️
+
+----
+# Bugs and suggestions
+Please file an issue on:
+
+Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
+
+## Known bugs
+* Not showing some buildings names correctly on parking fees screen
