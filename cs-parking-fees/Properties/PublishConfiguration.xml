@@ -86,5 +86,5 @@ Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
   <ExternalLink Type="github" Url="https://github.com/thiago-rcarvalho/cs2-parking-fee-control" />
   <ExternalLink Type="kofi" Url="https://ko-fi.com/stealthcold" />
   <!-- Supported values Public, Private, Unlisted -->
-  <AccessLevel Value="Private" />
+  <AccessLevel Value="Public" />
 </Publish>
