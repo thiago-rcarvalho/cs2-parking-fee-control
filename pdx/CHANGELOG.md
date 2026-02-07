@@ -1,1 +1,1 @@
-0.1 - Initial BETA release
+0.1.1 - Improved thumbnails and display name detection

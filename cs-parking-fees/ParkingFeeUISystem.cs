@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using Game.Prefabs;
 using Game.SceneFlow;
 
@@ -126,6 +128,7 @@ namespace ParkingFeeControl.UI
         private PrefabUISystem _prefabUISystem;
         private ImageSystem _imageSystem;
         private ParkingPolicyModifierSystem _policySystem;
+        private Dictionary<string, PrefabBase> _prefabByNameCache;
 
         protected override void OnCreate()
         {
@@ -207,6 +210,7 @@ namespace ParkingFeeControl.UI
             try
             {
                 Mod.ReloadConfig();
+                _prefabByNameCache = null;
                 LoadConfigFromMod();
                 NotifyConfigChanged();
 
@@ -352,30 +356,25 @@ namespace ParkingFeeControl.UI
         {
             try
             {
-                string[] prefabTypes = { "BuildingPrefab", "Prefab" };
-                
-                foreach (var prefabType in prefabTypes)
+                var prefabBase = TryResolvePrefabByName(prefabName);
+                if (prefabBase != null)
                 {
-                    var prefabId = new PrefabID(prefabType, prefabName);
-                    if (_prefabSystem.TryGetPrefab(prefabId, out var prefabBase))
+                    _prefabUISystem.GetTitleAndDescription(_prefabSystem.GetEntity(prefabBase), out var titleId, out var _);
+
+                    if (GameManager.instance.localizationManager.activeDictionary.TryGetValue(titleId, out var name)
+                        && !string.IsNullOrWhiteSpace(name))
                     {
-                        // TODO: Improve this method. It's not loading correctly for some prefabs.
-                        _prefabUISystem.GetTitleAndDescription(_prefabSystem.GetEntity(prefabBase), out var titleId, out var _);
-
-                        if (GameManager.instance.localizationManager.activeDictionary.TryGetValue(titleId, out var name))
-                        {
-                            return name;
-                        }
-
-                        break;
+                        return name;
                     }
+
+                    return ToFriendlyName(prefabBase.name);
                 }
-                
-                return prefabName;
+
+                return ToFriendlyName(prefabName);
             }
             catch
             {
-                return prefabName;
+                return ToFriendlyName(prefabName);
             }
         }
 
@@ -389,24 +388,164 @@ namespace ParkingFeeControl.UI
         {
             try
             {
-                string[] prefabTypes = { "BuildingPrefab", "Prefab" };
-                
-                foreach (var prefabType in prefabTypes)
+                var fallbackIcon = GetDefaultFallbackIcon();
+                var prefabBase = TryResolvePrefabByName(prefabName);
+                if (prefabBase != null)
                 {
-                    var prefabId = new PrefabID(prefabType, prefabName);
-                    if (_prefabSystem.TryGetPrefab(prefabId, out var prefabBase))
+                    var thumbnail = ImageSystem.GetThumbnail(prefabBase);
+                    if (!string.IsNullOrEmpty(thumbnail) && !IsPlaceholderThumbnail(thumbnail))
                     {
-                        // Get thumbnail using ImageSystem like FindIt does
-                        return ImageSystem.GetThumbnail(prefabBase) ?? string.Empty;
+                        return thumbnail;
                     }
+
+                    if (_imageSystem != null)
+                    {
+                        var entity = _prefabSystem.GetEntity(prefabBase);
+                        var groupIcon = _imageSystem.GetGroupIcon(entity);
+                        if (!string.IsNullOrEmpty(groupIcon))
+                        {
+                            return groupIcon;
+                        }
+                    }
+
+                    return fallbackIcon;
                 }
-                
-                return string.Empty;
+                return fallbackIcon;
             }
             catch
             {
-                return string.Empty;
+                return GetDefaultFallbackIcon();
             }
+        }
+
+        private static string GetDefaultFallbackIcon()
+        {
+            return "Media/Game/Icons/Parking.svg";
+        }
+
+        private static bool IsPlaceholderThumbnail(string value)
+        {
+            return string.Equals(value, "Media/Placeholder.svg", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private PrefabBase TryResolvePrefabByName(string prefabName)
+        {
+            if (string.IsNullOrWhiteSpace(prefabName) || _prefabSystem == null)
+            {
+                return null;
+            }
+
+            EnsurePrefabCache();
+
+            if (_prefabByNameCache != null && _prefabByNameCache.TryGetValue(prefabName, out var prefab))
+            {
+                return prefab;
+            }
+
+            if (_prefabByNameCache != null && _prefabByNameCache.Count == 0)
+            {
+                _prefabByNameCache = null;
+                EnsurePrefabCache();
+
+                if (_prefabByNameCache != null && _prefabByNameCache.TryGetValue(prefabName, out prefab))
+                {
+                    return prefab;
+                }
+            }
+
+            return null;
+        }
+
+        private void EnsurePrefabCache()
+        {
+            if (_prefabByNameCache != null || _prefabSystem == null)
+            {
+                return;
+            }
+
+            _prefabByNameCache = new Dictionary<string, PrefabBase>(StringComparer.OrdinalIgnoreCase);
+
+            try
+            {
+                IEnumerable<PrefabBase> prefabs = null;
+
+                var prefabsProperty = typeof(PrefabSystem).GetProperty("prefabs", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (prefabsProperty?.GetValue(_prefabSystem) is IEnumerable<PrefabBase> propPrefabs)
+                {
+                    prefabs = propPrefabs;
+                }
+                else
+                {
+                    var prefabsField = typeof(PrefabSystem).GetField("m_Prefabs", BindingFlags.Instance | BindingFlags.NonPublic);
+                    if (prefabsField?.GetValue(_prefabSystem) is IEnumerable<PrefabBase> fieldPrefabs)
+                    {
+                        prefabs = fieldPrefabs;
+                    }
+                }
+
+                if (prefabs == null)
+                {
+                    return;
+                }
+
+                foreach (var prefab in prefabs)
+                {
+                    if (prefab?.name == null)
+                    {
+                        continue;
+                    }
+
+                    if (!_prefabByNameCache.ContainsKey(prefab.name))
+                    {
+                        _prefabByNameCache.Add(prefab.name, prefab);
+                    }
+                }
+            }
+            catch
+            {
+                // If reflection fails, keep cache empty and fall back to raw names
+            }
+        }
+
+        private static string ToFriendlyName(string prefabName)
+        {
+            if (string.IsNullOrWhiteSpace(prefabName))
+            {
+                return prefabName ?? string.Empty;
+            }
+
+            var sb = new StringBuilder(prefabName.Length + 8);
+            char prev = '\0';
+
+            foreach (var ch in prefabName)
+            {
+                if (ch == '_' || ch == '-')
+                {
+                    if (sb.Length > 0 && sb[sb.Length - 1] != ' ')
+                    {
+                        sb.Append(' ');
+                    }
+                    prev = ch;
+                    continue;
+                }
+
+                if (sb.Length > 0)
+                {
+                    var addSpace = (char.IsUpper(ch) && (char.IsLower(prev) || char.IsDigit(prev)))
+                        || (char.IsDigit(ch) && !char.IsDigit(prev) && prev != ' ')
+                        || (char.IsLetter(ch) && char.IsDigit(prev));
+
+                    if (addSpace && sb[sb.Length - 1] != ' ')
+                    {
+                        sb.Append(' ');
+                    }
+                }
+
+                sb.Append(ch);
+                prev = ch;
+            }
+
+            return sb.ToString().Trim();
         }
     }
 }

@@ -9,16 +9,16 @@
 		<Nullable>enable</Nullable>
 		<EnableDefaultCompileItems>true</EnableDefaultCompileItems>
 
-		<AssemblyVersion>0.1.0</AssemblyVersion>
-		<FileVersion>0.1.0</FileVersion>
+		<AssemblyVersion>0.1.1</AssemblyVersion>
+		<FileVersion>0.1.1</FileVersion>
 
 		<!--The file where mod information which is required for publishing mod on PDX mods are stored-->
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
 	</PropertyGroup>
 
 	<!--Imports must be after PropertyGroup block-->
-	<Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.props" />
-	<Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.targets" />
+	<Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.props" Condition=" '$(OS)' == 'Windows_NT' "/>
+	<Import Project="$([System.Environment]::GetEnvironmentVariable('CSII_TOOLPATH', 'EnvironmentVariableTarget.User'))\Mod.targets" Condition=" '$(OS)' == 'Windows_NT' "/>
 	
 	<ItemGroup>
 		<EmbeddedResource Include="parking-data.json" />
@@ -105,7 +105,10 @@
 	</ItemGroup>
 
 	<!--ui-related commands-->
-	<Target Name="BuildUI" AfterTargets="AfterBuild">
+	<Target Name="BuildUIAll" AfterTargets="AfterBuild"  Condition=" '$(OS)' == 'Windows_NT' ">
+		<CallTarget Targets="BuildUI" />
+	</Target>
+	<Target Name="BuildUI">
 		<Exec Command="npm run build" WorkingDirectory="$(ProjectDir)\ui" />
 	</Target>
 	<Target Name="CopyUIFiles" AfterTargets="BuildUI">
@@ -117,7 +120,7 @@
 	
 	<Target Name="CleanUIOutput" BeforeTargets="Clean">
 		<RemoveDir Directories="$(ProjectDir)\ui\output" />
-	</Target>	
+	</Target>
 
 	<!--other files manipulation-->
 	<Target Name="SetupAttributes" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Debug'">

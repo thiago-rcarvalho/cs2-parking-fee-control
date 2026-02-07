@@ -47,13 +47,13 @@ if [ -d "output/" ]; then
 
     # For CS2, the UI files go directly in the mod folder root, not in ui subfolder
     # The game expects mod.json and the JS/CSS files in the same directory
-    if [ -f "output/parking-fee-control.mjs" ]; then
-        cp "output/parking-fee-control.mjs" "$GAME_MODS_DIR/"
-    # elif [ -f "output/parking-fee-control.js" ]; then
-    #     cp "output/parking-fee-control.js" "$GAME_MODS_DIR/"
+    if [ -f "output/ParkingFeeControl.mjs" ]; then
+        cp "output/ParkingFeeControl.mjs" "$GAME_MODS_DIR/"
+    # elif [ -f "output/ParkingFeeControl.js" ]; then
+    #     cp "output/ParkingFeeControl.js" "$GAME_MODS_DIR/"
     fi
-    if [ -f "output/parking-fee-control.css" ]; then
-        cp "output/parking-fee-control.css" "$GAME_MODS_DIR/"
+    if [ -f "output/ParkingFeeControl.css" ]; then
+        cp "output/ParkingFeeControl.css" "$GAME_MODS_DIR/"
     fi
     echo "✓ UI files copied"
 else

@@ -29,16 +29,25 @@ You can add compatibility with other mods by editing `cs-parking-fees/parking-da
 ## Before Build this mod
 
 **Configure your environment:**
-	- Create a file named `local.envs` in the project root (same folder as `compile.sh`). Example:
-		```env
-		GAME_MODS_DIR="/path/to/your/Mods/ParkingFeeControl"
-		```
-	- This file is ignored by git and allows each user to set their own mod output path.
-	- For C# dependencies, if you need to override library paths, create or edit `cs-parking-fees/Directory.Build.local.props`:
-		```xml
-		<Project>
-			<PropertyGroup>
-				<MANAGED_DLLS_PATH>/path/to/your/libs</MANAGED_DLLS_PATH>
-			</PropertyGroup>
-		</Project>
-		```
+- Create a file named `local.envs` in the project root (same folder as `compile.sh`). Example:
+	```env
+	export GAME_MODS_DIR="/path/to/your/Mods/ParkingFeeControl"
+	export CSII_USERDATAPATH="/path/to/your/AppData/LocalLow/Collosal Order/Cities Skylines 2"
+	export BUILD_DIR="/bin/Debug/net472/"
+	```
+- This file is ignored by git and allows each user to set their own mod output path.
+- For C# dependencies, if you need to override library paths, create or edit `cs-parking-fees/Directory.Build.local.props`:
+	```xml
+	<Project>
+		<PropertyGroup>
+			<MANAGED_DLLS_PATH>/path/to/your/libs</MANAGED_DLLS_PATH>
+		</PropertyGroup>
+	</Project>
+	```
+**Build**
+
+If you are using Linux, use the `compile.sh` script. But if you are using Windows, simply run your IDE build command.
+
+**Publish**
+
+Publish can only be made on Windows through the IDE publish menu.
