@@ -10,6 +10,10 @@ using System.Reflection;
 using System.Text;
 using Game.Prefabs;
 using Game.SceneFlow;
+using Game.Areas;
+using Game.Common;
+using Unity.Collections;
+using Unity.Entities;
 
 namespace ParkingFeeControl.UI
 {
@@ -117,6 +121,8 @@ namespace ParkingFeeControl.UI
 
     public partial class ParkingFeeUISystem : UISystemBase
     {
+        private const string DistrictPrefabIconPath = "Media/Game/Policies/PaidParking.svg";
+
         private ValueBinding<ParkingFeeUIData> _configBinding;
         private TriggerBinding<CategoryFeeUpdate> _updateCategoryFeeTrigger;
         private TriggerBinding<PrefabFeeUpdate> _updatePrefabFeeTrigger;
@@ -129,6 +135,8 @@ namespace ParkingFeeControl.UI
         private ImageSystem _imageSystem;
         private ParkingPolicyModifierSystem _policySystem;
         private Dictionary<string, PrefabBase> _prefabByNameCache;
+        private EntityQuery _districtQuery;
+        private NameSystem _nameSystem;
 
         protected override void OnCreate()
         {
@@ -139,6 +147,10 @@ namespace ParkingFeeControl.UI
             _prefabUISystem = World.GetOrCreateSystemManaged<PrefabUISystem>();
             _imageSystem = World.GetOrCreateSystemManaged<ImageSystem>();
             _policySystem = World.GetOrCreateSystemManaged<ParkingPolicyModifierSystem>();
+            _nameSystem = World.GetOrCreateSystemManaged<NameSystem>();
+            _districtQuery = GetEntityQuery(
+                ComponentType.ReadOnly<District>()
+            );
 
             LoadConfigFromMod();
 
@@ -183,14 +195,22 @@ namespace ParkingFeeControl.UI
             _currentConfig = new ParkingFeeUIData
             {
                 categories = config.Categories.Select(c => {
-                    // Build prefab UI data then sort by localized display name for a better UX
-                    var prefabList = c.Prefabs.Select(p => new ParkingFeeUIData.PrefabData
+                    List<ParkingFeeUIData.PrefabData> prefabList;
+                    
+                    if (string.Equals(c.Type, ParkingFeeConfig.DistrictsCategoryType, StringComparison.OrdinalIgnoreCase))
                     {
-                        name = p.Name,
-                        displayName = GetDisplayName(p.Name),
-                        thumbnail = GetThumbnail(p.Name),
-                        fee = p.Fee ?? c.DefaultFee
-                    }).ToList();
+                        prefabList = BuildDistrictPrefabData(c);
+                    }
+                    else
+                    {
+                        prefabList = c.Prefabs.Select(p => new ParkingFeeUIData.PrefabData
+                        {
+                            name = p.Name,
+                            displayName = GetDisplayName(p.Name),
+                            thumbnail = GetThumbnail(p.Name),
+                            fee = p.Fee ?? c.DefaultFee
+                        }).ToList();
+                    }
 
                     var sorted = prefabList.OrderBy(p => p.displayName ?? p.name, StringComparer.OrdinalIgnoreCase).ToList();
 
@@ -203,6 +223,93 @@ namespace ParkingFeeControl.UI
                     };
                 }).ToList()
             };
+        }
+
+        private List<ParkingFeeUIData.PrefabData> BuildDistrictPrefabData(ParkingFeeConfig.Category category)
+        {
+            var result = new List<ParkingFeeUIData.PrefabData>();
+            if (_districtQuery == null)
+            {
+                return result;
+            }
+
+            var districts = _districtQuery.ToEntityArray(Allocator.Temp);
+            try
+            {
+                var modCategory = Mod.Config.Categories.FirstOrDefault(c => string.Equals(c.Type, ParkingFeeConfig.DistrictsCategoryType, StringComparison.OrdinalIgnoreCase));
+                var currentKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                bool changed = false;
+
+                foreach (var district in districts)
+                {
+                    var key = ParkingFeeConfig.GetDistrictKey(district);
+                    currentKeys.Add(key);
+
+                    int fee = category.DefaultFee;
+                    if (modCategory != null)
+                    {
+                        var entry = modCategory.Prefabs.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
+                        if (entry == null)
+                        {
+                            modCategory.Prefabs.Add(new ParkingFeeConfig.PrefabEntry { Name = key });
+                            changed = true;
+                        }
+                        else if (entry.Fee.HasValue)
+                        {
+                            fee = entry.Fee.Value;
+                        }
+                    }
+
+                    result.Add(new ParkingFeeUIData.PrefabData
+                    {
+                        name = key,
+                        displayName = GetDistrictDisplayName(district),
+                        thumbnail = DistrictPrefabIconPath,
+                        fee = fee
+                    });
+                }
+
+                if (modCategory != null)
+                {
+                    var toRemove = modCategory.Prefabs.Where(p => !currentKeys.Contains(p.Name)).ToList();
+                    if (toRemove.Count > 0)
+                    {
+                        foreach (var rem in toRemove)
+                        {
+                            modCategory.Prefabs.Remove(rem);
+                        }
+                        changed = true;
+                    }
+
+                    if (changed)
+                    {
+                        Mod.Config.Save();
+                    }
+                }
+            }
+            finally
+            {
+                districts.Dispose();
+            }
+
+            return result;
+        }
+
+        private string GetDistrictDisplayName(Entity district)
+        {
+            try
+            {
+                if (_nameSystem != null)
+                {
+                    return _nameSystem.GetRenderedLabelName(district);
+                }
+            }
+            catch
+            {
+                // Ignore and fall back below
+            }
+
+            return $"District #{district.Index}";
         }
 
         private void RefreshConfigFromMod()

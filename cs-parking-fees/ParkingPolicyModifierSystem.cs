@@ -6,6 +6,7 @@ using Game.Prefabs;
 using Game.Policies;
 using Game.UI;
 using Game.Common;
+using Game.Areas;
 
 namespace ParkingFeeControl
 {
@@ -17,6 +18,7 @@ namespace ParkingFeeControl
     public partial class ParkingPolicyModifierSystem : SystemBase
     {
         private EntityQuery m_BuildingQuery;
+        private EntityQuery m_DistrictQuery;
         private float m_TimeSinceLastUpdate = 0f;
         private bool m_SystemInitialized = false;
         private PrefabSystem m_PrefabSystem;
@@ -24,9 +26,11 @@ namespace ParkingFeeControl
         
         // Cache of parking fee policy entity (obtained from prefab)
         private Entity m_ParkingFeePolicyEntity = Entity.Null;
+        private Entity m_DistrictParkingFeePolicyEntity = Entity.Null;
         
         // Known policy prefab name for parking fees
         private const string PARKING_FEE_POLICY_NAME = "Lot Parking Fee";
+        private const string DISTRICT_PARKING_FEE_POLICY_NAME = "Roadside Parking Fee";
 
         protected override void OnCreate()
         {
@@ -36,6 +40,10 @@ namespace ParkingFeeControl
             m_BuildingQuery = GetEntityQuery(
                 ComponentType.ReadWrite<Building>(),
                 ComponentType.ReadOnly<PrefabRef>()
+            );
+
+            m_DistrictQuery = GetEntityQuery(
+                ComponentType.ReadWrite<District>()
             );
             
             // Get PrefabSystem reference to access prefab names
@@ -53,15 +61,25 @@ namespace ParkingFeeControl
                 ModLogger.Info("ParkingPolicyModifierSystem started running (periodic update mode)");
                 
                 // Find the parking fee policy prefab entity directly
-                m_ParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab();
+                m_ParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab(PARKING_FEE_POLICY_NAME);
+                m_DistrictParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab(DISTRICT_PARKING_FEE_POLICY_NAME);
                 
                 if (m_ParkingFeePolicyEntity != Entity.Null)
                 {
-                    ModLogger.Info($"✓ Found parking fee policy prefab entity: {m_ParkingFeePolicyEntity}");
+                    ModLogger.Info($"✓ Found parking lot fee policy prefab entity: {m_ParkingFeePolicyEntity}");
                 }
                 else
                 {
-                    ModLogger.Warn("⚠ Could not find parking fee policy prefab - will retry on next update");
+                    ModLogger.Warn("⚠ Could not find parking lot fee policy prefab - will retry on next update");
+                }
+
+                if (m_DistrictParkingFeePolicyEntity != Entity.Null)
+                {
+                    ModLogger.Info($"✓ Found district paid parking policy prefab entity: {m_DistrictParkingFeePolicyEntity}");
+                }
+                else
+                {
+                    ModLogger.Warn("⚠ Could not find district paid parking policy prefab - will retry on next update");
                 }
                 
                 m_SystemInitialized = true;
@@ -72,15 +90,15 @@ namespace ParkingFeeControl
         /// Get the parking fee policy entity directly from the PrefabSystem.
         /// Uses PolicySliderPrefab type with the known policy name.
         /// </summary>
-        private Entity GetParkingFeePolicyFromPrefab()
+        private Entity GetParkingFeePolicyFromPrefab(string policyName)
         {
             try
             {
-                var prefabId = new PrefabID("PolicySliderPrefab", PARKING_FEE_POLICY_NAME);
+                var prefabId = new PrefabID("PolicySliderPrefab", policyName);
                 
                 // if (Mod.Config.DebugLogging)
                 // {
-                //     Mod.Log?.Info($"TryGetPrefab: Type='PolicySliderPrefab', Name='{PARKING_FEE_POLICY_NAME}'");
+                //     Mod.Log?.Info($"TryGetPrefab: Type='PolicySliderPrefab', Name='{policyName}'");
                 // }
                 
                 if (m_PrefabSystem.TryGetPrefab(prefabId, out var prefabBase))
@@ -95,11 +113,11 @@ namespace ParkingFeeControl
                     }
                 }
                 
-                ModLogger.Warn($"Could not find parking fee policy prefab '{PARKING_FEE_POLICY_NAME}'");
+                ModLogger.Warn($"Could not find parking fee policy prefab '{policyName}'");
             }
             catch (Exception ex)
             {
-                ModLogger.Error($"Error finding parking fee policy prefab: {ex.Message}");
+                ModLogger.Error($"Error finding parking fee policy prefab '{policyName}': {ex.Message}");
             }
             
             return Entity.Null;
@@ -123,10 +141,16 @@ namespace ParkingFeeControl
             // Retry finding policy if not found yet
             if (m_ParkingFeePolicyEntity == Entity.Null)
             {
-                m_ParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab();
+                m_ParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab(PARKING_FEE_POLICY_NAME);
+            }
+
+            if (m_DistrictParkingFeePolicyEntity == Entity.Null)
+            {
+                m_DistrictParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab(DISTRICT_PARKING_FEE_POLICY_NAME);
             }
 
             ModifyBuildingPolicies();
+            ModifyDistrictPolicies();
         }
 
         public void ApplyNow(bool resetTimer = true)
@@ -141,10 +165,16 @@ namespace ParkingFeeControl
 
             if (m_ParkingFeePolicyEntity == Entity.Null)
             {
-                m_ParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab();
+                m_ParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab(PARKING_FEE_POLICY_NAME);
+            }
+
+            if (m_DistrictParkingFeePolicyEntity == Entity.Null)
+            {
+                m_DistrictParkingFeePolicyEntity = GetParkingFeePolicyFromPrefab(DISTRICT_PARKING_FEE_POLICY_NAME);
             }
 
             ModifyBuildingPolicies();
+            ModifyDistrictPolicies();
         }
 
         /// <summary>
@@ -322,6 +352,125 @@ namespace ParkingFeeControl
             }
 
             ModLogger.Debug($"Found {parkingBuildingsFound} parking buildings, {buildingsWithPolicies} with policies, modified {modifiedPolicies} policies");
+        }
+
+        /// <summary>
+        /// Modify parking policies on all districts.
+        /// Applies configured fees periodically.
+        /// </summary>
+        private void ModifyDistrictPolicies()
+        {
+            if (m_DistrictQuery == null)
+            {
+                return;
+            }
+
+            var districts = m_DistrictQuery.ToEntityArray(Allocator.Temp);
+            int districtsFound = 0;
+            int modifiedPolicies = 0;
+            int districtsWithPolicies = 0;
+
+            try
+            {
+                foreach (var districtEntity in districts)
+                {
+                    districtsFound++;
+
+                    string customName = null;
+                    try
+                    {
+                        if (m_NameSystem != null && m_NameSystem.TryGetCustomName(districtEntity, out var cn))
+                        {
+                            customName = cn;
+                        }
+                    }
+                    catch
+                    {
+                        customName = null;
+                    }
+
+                    if (!string.IsNullOrEmpty(customName) && Mod.Settings.ShouldIgnoreByName(customName))
+                    {
+                        continue;
+                    }
+
+                    string districtKey = ParkingFeeConfig.GetDistrictKey(districtEntity);
+                    int targetFee = Mod.Config.GetParkingFeeForDistrictKey(districtKey);
+                    bool disablePolicy = targetFee <= 0;
+                    int effectiveFee = disablePolicy ? targetFee : Math.Min(50, Math.Max(1, targetFee));
+
+                    if (!EntityManager.HasBuffer<Policy>(districtEntity))
+                    {
+                        continue;
+                    }
+
+                    districtsWithPolicies++;
+                    var policyBuffer = EntityManager.GetBuffer<Policy>(districtEntity);
+
+                    bool foundPolicy = false;
+
+                    for (int i = 0; i < policyBuffer.Length; i++)
+                    {
+                        var policy = policyBuffer[i];
+                        if (policy.m_Policy != m_DistrictParkingFeePolicyEntity)
+                        {
+                            continue;
+                        }
+
+                        foundPolicy = true;
+                        bool isActive = (policy.m_Flags & PolicyFlags.Active) != 0;
+
+                        if (disablePolicy)
+                        {
+                            if (isActive)
+                            {
+                                policy.m_Flags &= ~PolicyFlags.Active;
+                                policyBuffer[i] = policy;
+                                modifiedPolicies++;
+                            }
+                            continue;
+                        }
+
+                        bool enableNeeded = effectiveFee > 1;
+                        bool modified = false;
+
+                        if (enableNeeded && !isActive)
+                        {
+                            policy.m_Flags |= PolicyFlags.Active;
+                            isActive = true;
+                            modified = true;
+                        }
+
+                        if (isActive)
+                        {
+                            if (policy.m_Adjustment != effectiveFee)
+                            {
+                                policy.m_Adjustment = effectiveFee;
+                                modified = true;
+                            }
+
+                            if (modified)
+                            {
+                                policyBuffer[i] = policy;
+                                modifiedPolicies++;
+                            }
+                        }
+                    }
+
+                    if (!foundPolicy && m_DistrictParkingFeePolicyEntity != Entity.Null)
+                    {
+                        PolicyFlags flags = disablePolicy ? 0 : PolicyFlags.Active;
+                        policyBuffer.Add(new Policy(m_DistrictParkingFeePolicyEntity, flags, effectiveFee));
+                        modifiedPolicies++;
+                    }
+                }
+            }
+            finally
+            {
+                districts.Dispose();
+            }
+
+            ModLogger.Debug($"Found {districtsFound} districts, {districtsWithPolicies} with policies, modified {modifiedPolicies} policies");
         }
     }
 }

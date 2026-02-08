@@ -5,6 +5,7 @@ using Game.Modding;
 using Game.SceneFlow;
 using Unity.Entities;
 using System.Linq;
+using System.Reflection;
 
 namespace ParkingFeeControl
 {
@@ -14,6 +15,7 @@ namespace ParkingFeeControl
     /// </summary>
     public class Mod : IMod
     {
+        public static string ModVersion { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
         /// <summary>
         /// Logger instance for the mod.
         /// </summary>
@@ -48,6 +50,7 @@ namespace ParkingFeeControl
             Log = LogManager.GetLogger(nameof(ParkingFeeControl)).SetShowsErrorsInUI(true);
             ModLogger.Info("============================================");
             ModLogger.Info("Parking Fee Control mod loading...");
+            ModLogger.Info($"Mod version: {ModVersion}");
             ModLogger.Info("============================================");
 
             // Get mod path from GameManager
