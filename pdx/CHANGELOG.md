@@ -1,1 +1,1 @@
-0.1.1 - Improved thumbnails and display name detection
+0.2.0 - Added German localization (thanks to AndyStgt89)

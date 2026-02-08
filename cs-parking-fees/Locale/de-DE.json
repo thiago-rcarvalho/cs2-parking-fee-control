@@ -1,0 +1,46 @@
+{
+  "Options.SECTION[ParkingFeeControl.ParkingFeeControl.Mod]": "Parkgebühren-Kontrollsystem",
+  "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.General]": "Allgemeine Einstellungen",
+
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "Aktiviert",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "Debug-Protokollierung",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "Aktualisierungsintervall",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "Tag ignorieren",
+
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "Parkgebühren-Kontrollsystem ein- oder ausschalten.",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "Debug logging für Fehlersuche einschalten.",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "Wie oft Parkgebühren von Gebäuden aktualisiert werden sollen.",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "Gebäude mit diesem Tag im Namen werden ignoriert.",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Nofee]": "[nofee]",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Npf]": "[npf]",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.PipeNpf]": "|npf|",
+
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes1]": "1 Minute",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes3]": "3 Minuten",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes5]": "5 Minuten",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes10]": "10 Minuten",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes15]": "15 Minuten",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes30]": "30 Minuten",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes60]": "60 Minuten",
+
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes1]": "1 Minute",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes3]": "3 Minuten",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes5]": "5 Minuten",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes10]": "10 Minuten",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes15]": "15 Minuten",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes30]": "30 Minuten",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes60]": "60 Minuten",
+
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.IGNORETAGTYPE[Nofee]": "[nofee]",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.IGNORETAGTYPE[Npf]": "[npf]",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.IGNORETAGTYPE[PipeNpf]": "|npf|",
+
+  "ParkingFeeControl[PanelTitle]": "Parkgebühren",
+  "ParkingFeeControl[Car]": "PKW-Parkplätze",
+  "ParkingFeeControl[Bicycle]": "Fahrrad-Parkplätze",
+  "ParkingFeeControl[Motorcycle]": "Motorrad-Parkplätze",
+  "ParkingFeeControl[Type]": "Typ",
+  "ParkingFeeControl[FeeRate]": "Gebührenhöhe",
+  "ParkingFeeControl[Fee]": "Gebühren",
+  "ParkingFeeControl[ApplyNow]": "Jetzt anwenden"
+}

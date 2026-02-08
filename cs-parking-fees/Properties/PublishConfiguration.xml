@@ -20,7 +20,7 @@ Features:
 * You can ignore fee application for parking lots that have the following tags in their name: [nofee], [npf], or |npf|. Just add one of these tags to the building's name.
 * Since this mod does not alter your save, it can be added or removed at any time without issues.
 * Compatible with Vanilla parking lots and many other mods (see list below).
-* Supported languages: en-us, pt-br (contribute with translations on the project's GitHub)
+* Supported languages: en-us, pt-br, de-DE (contribute with translations on the project's GitHub)
 
 
 Parking Fee Control is currently in BETA. Bugs may occur; fee application performance is still being validated, but so far no bottlenecks have been observed.
@@ -50,10 +50,15 @@ Parking Fee Control is currently in BETA. Bugs may occur; fee application perfor
 
 ----
 # Thank you
+
 This mod was developed using as reference the excellent mods from these amazing modders:
-*yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ, Triton Supreme*
+**yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ, Triton Supreme**
 
 Thank you for your work in the CS2 community ❤️
+
+## Translations Credits
+
+de-DE: **AndyStgt89**
 
 ----
 # Bugs and suggestions
@@ -74,14 +79,14 @@ Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
   <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="" />
   <!--Version of the mod-->
-  <ModVersion Value="0.1.1" />
+  <ModVersion Value="0.2.0" />
   <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.5.*" />
   <!--Dependency for the mod, can be set multiple times-->
   <Dependency Id="" />
   <!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
   <!--<ChangeLog Value="" />-->
-  <ChangeLog>0.1.1 - Improved thumbnails and display name detection</ChangeLog>
+  <ChangeLog>0.2.0 - Added German localization (thanks to AndyStgt89)</ChangeLog>
   <!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon, buymeacoffee, kofi, crowdin, gitlab-->
   <ExternalLink Type="github" Url="https://github.com/thiago-rcarvalho/cs2-parking-fee-control" />
   <ExternalLink Type="kofi" Url="https://ko-fi.com/stealthcold" />

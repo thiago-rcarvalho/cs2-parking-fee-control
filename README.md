@@ -15,6 +15,10 @@ Translations are stored in JSON files inside the `cs-parking-fees/Locale/` folde
 2. Add or update the translation keys/values as needed.
 3. Submit a pull request with your changes.
 
+### Supported Languages
+
+> <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg" width="20"/> en-US | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/BR.svg" width="20"/> pt-BR | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/DE.svg" width="20"/> de-DE (by @AndyStgt89)
+
 ## Adding Compatibility for Other Mods
 
 You can add compatibility with other mods by editing `cs-parking-fees/parking-data.json`:
