@@ -11,7 +11,7 @@ Features:
 * You can ignore fee application for parking lots that have the following tags in their name: [nofee], [npf], or |npf|. Just add one of these tags to the building's name.
 * Since this mod does not alter your save, it can be added or removed at any time without issues.
 * Compatible with Vanilla parking lots and many other mods (see list below).
-* Supported languages: en-us, pt-br (contribute with translations on the project's GitHub)
+* Supported languages: en-us, pt-br, de-DE (contribute with translations on the project's GitHub)
 
 
 Parking Fee Control is currently in BETA. Bugs may occur; fee application performance is still being validated, but so far no bottlenecks have been observed.
@@ -41,10 +41,15 @@ Parking Fee Control is currently in BETA. Bugs may occur; fee application perfor
 
 ----
 # Thank you
+
 This mod was developed using as reference the excellent mods from these amazing modders:
-*yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ, Triton Supreme*
+**yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ, Triton Supreme**
 
 Thank you for your work in the CS2 community ❤️
+
+## Translations Credits
+
+de-DE: **AndyStgt89**
 
 ----
 # Bugs and suggestions
