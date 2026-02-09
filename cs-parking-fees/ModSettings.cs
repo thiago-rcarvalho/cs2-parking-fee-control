@@ -13,8 +13,8 @@ namespace ParkingFeeControl
     /// </summary>
     [FileLocation("ModsSettings/ParkingFeeControl/Settings")]
     [SettingsUITabOrder("Settings")]
-    [SettingsUIGroupOrder("General")]
-    [SettingsUIShowGroupName("General")]
+    [SettingsUIGroupOrder("General", "About")]
+    [SettingsUIShowGroupName("General", "About")]
     public class ModSettings : ModSetting
     {
         public ModSettings(IMod mod) : base(mod)
@@ -40,6 +40,9 @@ namespace ParkingFeeControl
 
         [SettingsUISection("Settings", "General")]
         public IgnoreTagType IgnoreTag { get; set; } = IgnoreTagType.Npf;
+
+        [SettingsUISection("Settings", "About")]
+        public string Version => Mod.ModVersion;
 
         /// <summary>
         /// Get update frequency in seconds.

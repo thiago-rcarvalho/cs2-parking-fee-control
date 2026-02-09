@@ -4,6 +4,7 @@ set -e
 
 CLR_YELLOW_B="\033[1;33m"
 CLR_YELLOW_E="\033[0m"
+BUILD_DIR="./cs-parking-fees/bin/Debug/net472"
 
 # These variables should be defined on local.envs (create manually if it not exists):
 GAME_MODS_DIR=""
@@ -20,7 +21,6 @@ echo " - BUILD_DIR: $BUILD_DIR"
 echo " - GAME_MODS_DIR: $GAME_MODS_DIR"
 echo "============================================"
 
-BUILD_DIR="./cs-parking-fees/bin/Debug/net472"
 mkdir -p "$GAME_MODS_DIR"
 
 # Build UI 
@@ -92,19 +92,13 @@ else
     echo "⚠ Locale folder not found, skipping locale copy"
 fi
 
-# Copy parking-data.json
-if [ -f "parking-data.json" ]; then
-    echo "Copying parking-data.json..."
-    cp parking-data.json "$GAME_MODS_DIR/"
-    echo "✓ parking-data.json copied"
-else
-    echo "⚠ parking-data.json not found, skipping"
-fi
 popd
 
-# Always remove parking-confg from destination
-if [ -f "$GAME_MODS_DIR/parking-config.json" ]; then
-    rm "$GAME_MODS_DIR/parking-config.json"
+# Remove parking-config from destination only when requested
+if [ "$1" == "clean" ]; then
+    if [ -f "$GAME_MODS_DIR/parking-config.json" ]; then
+        rm "$GAME_MODS_DIR/parking-config.json"
+    fi
 fi
 
 echo "============================================"

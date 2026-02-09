@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Colossal.IO.AssetDatabase;
+using Unity.Entities;
 
 namespace ParkingFeeControl
 {
@@ -13,6 +14,8 @@ namespace ParkingFeeControl
     /// </summary>
     public class ParkingFeeConfig
     {
+        public const string DistrictsCategoryType = "districts";
+        private const string DistrictKeyPrefix = "district";
         public class PrefabEntry
         {
             [JsonProperty("name")]
@@ -283,6 +286,33 @@ namespace ParkingFeeControl
         }
 
         /// <summary>
+        /// Get the parking fee for a district by its key. Falls back to category default.
+        /// </summary>
+        public int GetParkingFeeForDistrictKey(string districtKey)
+        {
+            if (string.IsNullOrWhiteSpace(districtKey))
+                return 0;
+
+            var category = Categories.FirstOrDefault(c => string.Equals(c.Type, DistrictsCategoryType, StringComparison.OrdinalIgnoreCase));
+            if (category == null)
+                return 0;
+
+            var match = category.Prefabs.FirstOrDefault(p => string.Equals(p.Name, districtKey, StringComparison.OrdinalIgnoreCase));
+            if (match != null && match.Fee.HasValue)
+                return match.Fee.Value;
+
+            return category.DefaultFee;
+        }
+
+        /// <summary>
+        /// Build a stable key for a district entity.
+        /// </summary>
+        public static string GetDistrictKey(Entity district)
+        {
+            return $"{DistrictKeyPrefix}:{district.Index}:{district.Version}";
+        }
+
+        /// <summary>
         /// Create a deep clone of the configuration for UI binding.
         /// </summary>
         private static bool MergeWithParkingData(ParkingFeeConfig config, ParkingDataLoader.ParkingData parkingData)
@@ -330,24 +360,27 @@ namespace ParkingFeeControl
                     changed = true;
                 }
 
-                // Build set of allowed prefabs for this category (already filtered by installed mods)
-                var allowedPrefabs = new HashSet<string>(dataCat.PrefabNames, StringComparer.OrdinalIgnoreCase);
-
-                // Remove prefabs that authors removed from parking-data (even if user changed fee)
-                var prefabsToRemove = existingCat.Prefabs.Where(p => !allowedPrefabs.Contains(p.Name)).ToList();
-                foreach (var rem in prefabsToRemove)
+                if (!string.Equals(existingCat.Type, DistrictsCategoryType, StringComparison.OrdinalIgnoreCase))
                 {
-                    existingCat.Prefabs.Remove(rem);
-                    changed = true;
-                }
+                    // Build set of allowed prefabs for this category (already filtered by installed mods)
+                    var allowedPrefabs = new HashSet<string>(dataCat.PrefabNames, StringComparer.OrdinalIgnoreCase);
 
-                // Add new prefabs present in parking-data but missing in config
-                foreach (var prefab in dataCat.Prefabs)
-                {
-                    if (!existingCat.Prefabs.Any(p => string.Equals(p.Name, prefab.Name, StringComparison.OrdinalIgnoreCase)))
+                    // Remove prefabs that authors removed from parking-data (even if user changed fee)
+                    var prefabsToRemove = existingCat.Prefabs.Where(p => !allowedPrefabs.Contains(p.Name)).ToList();
+                    foreach (var rem in prefabsToRemove)
                     {
-                        existingCat.Prefabs.Add(new PrefabEntry { Name = prefab.Name });
+                        existingCat.Prefabs.Remove(rem);
                         changed = true;
+                    }
+
+                    // Add new prefabs present in parking-data but missing in config
+                    foreach (var prefab in dataCat.Prefabs)
+                    {
+                        if (!existingCat.Prefabs.Any(p => string.Equals(p.Name, prefab.Name, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            existingCat.Prefabs.Add(new PrefabEntry { Name = prefab.Name });
+                            changed = true;
+                        }
                     }
                 }
             }

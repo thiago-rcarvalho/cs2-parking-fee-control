@@ -15,7 +15,7 @@ Parking Fee Control is a mod that lets you manage parking fees for buildings, he
 After installing it, you'll see a Parking icon on the top-left side of the screen. Click it to access the fees screen.
 
 Features:
-* Customize fees for multiple parking lots (values range from 0 to 50). Fees can be applied instantly via the configuration panel and also periodically, as configured.
+* Customize fees for multiple **parking lots** and **districts** (values range from 0 to 50). Fees can be applied instantly via the configuration panel and also periodically, as configured.
 * Periodically updates the fees for parking lots added to the map during gameplay, keeping everything consistent.
 * You can ignore fee application for parking lots that have the following tags in their name: [nofee], [npf], or |npf|. Just add one of these tags to the building's name.
 * Since this mod does not alter your save, it can be added or removed at any time without issues.
@@ -79,14 +79,14 @@ Project GitHub: https://github.com/thiago-rcarvalho/cs2-parking-fee-control
   <!--Link to the forum post where the mod can be discussed-->
   <ForumLink Value="" />
   <!--Version of the mod-->
-  <ModVersion Value="0.2.0" />
+  <ModVersion Value="0.3.0" />
   <!--Recommended version of the base game to use the mod-->
   <GameVersion Value="1.5.*" />
   <!--Dependency for the mod, can be set multiple times-->
   <Dependency Id="" />
   <!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
   <!--<ChangeLog Value="" />-->
-  <ChangeLog>0.2.0 - Added German localization (thanks to AndyStgt89)</ChangeLog>
+  <ChangeLog>0.3.0 - Added support to manage districts roadside parking fees</ChangeLog>
   <!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon, buymeacoffee, kofi, crowdin, gitlab-->
   <ExternalLink Type="github" Url="https://github.com/thiago-rcarvalho/cs2-parking-fee-control" />
   <ExternalLink Type="kofi" Url="https://ko-fi.com/stealthcold" />

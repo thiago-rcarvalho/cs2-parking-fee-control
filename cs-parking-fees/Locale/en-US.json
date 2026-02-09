@@ -1,16 +1,19 @@
 {
   "Options.SECTION[ParkingFeeControl.ParkingFeeControl.Mod]": "Parking Fee Control",
   "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.General]": "General Settings",
+  "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.About]": "About",
 
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "Enabled",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "Debug Logging",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "Update Frequency",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "Ignore Tag",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Version]": "Version",
 
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "Enable or disable the parking fee control system.",
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "Enable debug logging for troubleshooting.",
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "How often to update parking fees on buildings.",
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "Buildings with this tag in their name will be ignored.",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Version]": "Current mod version.",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Nofee]": "[nofee]",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Npf]": "[npf]",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.PipeNpf]": "|npf|",
@@ -39,6 +42,7 @@
   "ParkingFeeControl[Car]": "Car Parking",
   "ParkingFeeControl[Bicycle]": "Bicycle Parking",
   "ParkingFeeControl[Motorcycle]": "Motorcycle Parking",
+  "ParkingFeeControl[Districts]": "Districts",
   "ParkingFeeControl[Type]": "Type",
   "ParkingFeeControl[FeeRate]": "Fee Rate",
   "ParkingFeeControl[Fee]": "Fee",

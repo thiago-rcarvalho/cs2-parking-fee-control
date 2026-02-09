@@ -1,16 +1,19 @@
 {
   "Options.SECTION[ParkingFeeControl.ParkingFeeControl.Mod]": "Parking Fee Control",
   "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.General]": "Configurações Gerais",
+  "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.About]": "Sobre",
 
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "Habilitado",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "Log de Depuração",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "Frequência de Atualização",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "Ignorar edifícios com a tag",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Version]": "Versão",
 
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "Ativa ou desativa o sistema de controle de taxas de estacionamento.",
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "Ativa logs avançados de depuração para solução de problemas.",
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "Com que frequência atualizar as taxas de estacionamento nos edifícios.",
   "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "Edifícios com esta tag no nome serão ignorados.",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Version]": "Versão atual do mod.",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Nofee]": "[nofee]",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Npf]": "[npf]",
   "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.PipeNpf]": "|npf|",
@@ -39,6 +42,7 @@
   "ParkingFeeControl[Car]": "Estacionamento para Carros",
   "ParkingFeeControl[Bicycle]": "Estacionamento para Bicicletas",
   "ParkingFeeControl[Motorcycle]": "Estacionamento para Motos",
+  "ParkingFeeControl[Districts]": "Distritos",
   "ParkingFeeControl[Type]": "Tipo",
   "ParkingFeeControl[FeeRate]": "Taxa",
   "ParkingFeeControl[Fee]": "Valor",

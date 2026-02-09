@@ -145,6 +145,12 @@
         { "name": "Narrow motorbike parking lot 2_AK", "modId": 131117 },
         { "name": "Narrow motorbike parking 1_AK", "modId": 131117 }
       ]
+    },
+    {
+      "type": "districts",
+      "icon": "Districts",
+      "defaultFee": 0,
+      "prefabs": []
     }
   ]
 }
