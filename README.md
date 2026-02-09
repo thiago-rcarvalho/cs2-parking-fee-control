@@ -1,11 +1,9 @@
+<img src="https://raw.githubusercontent.com/thiago-rcarvalho/cs2-parking-fee-control/refs/heads/main/pdx/pfc-logo.png" width="280"/>
+
 # Cities: Skylines II — Parking Fee Control Mod
 
-This repository contains the Parking Fee Control mod for Cities: Skylines II.
-
-## About the mod
-
-Parking Fee Control is a mod that lets you manage parking fees for buildings, helping you keep rates always up-to-date and exactly as you want!
-Detailed info on the Paradox mod page: [Parking Fee Control]()
+Parking Fee Control is a mod that lets you manage parking fees for buildings and districts, helping you keep rates always up-to-date and exactly as you want!
+Detailed info on the Paradox mod page: [Parking Fee Control](https://mods.paradoxplaza.com/mods/134032/Windows)
 
 ## Translating (Contributing to Locale)
 

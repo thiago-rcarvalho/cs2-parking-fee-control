@@ -1,1 +1,1 @@
-0.2.0 - Added German localization (thanks to AndyStgt89)
+0.3.0 - Added support to manage districts roadside parking fees
