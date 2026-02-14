@@ -1,26 +1,11 @@
 import React from 'react';
+import { getModule } from 'cs2/modding';
 
 // Custom floating button styled like the game's native buttons
 // Using longhand CSS properties as cohtml doesn't support shorthand with variables
 const buttonStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: 'var(--floatingToggleSize)',
-  height: 'var(--floatingToggleSize)',
-  paddingTop: 'var(--gap2)',
-  paddingRight: 'var(--gap2)',
-  paddingBottom: 'var(--gap2)',
-  paddingLeft: 'var(--gap2)',
-  backgroundColor: 'var(--accentColorNormal)',
-  borderTopLeftRadius: 'var(--floatingToggleBorderRadius)',
-  borderTopRightRadius: 'var(--floatingToggleBorderRadius)',
-  borderBottomLeftRadius: 'var(--floatingToggleBorderRadius)',
-  borderBottomRightRadius: 'var(--floatingToggleBorderRadius)',
   marginRight: '6rem',
   marginBottom: '6rem',
-  cursor: 'pointer',
-  border: 'none',
 };
 
 const iconStyle: React.CSSProperties = {
@@ -43,27 +28,25 @@ interface ToolbarButtonProps {
 }
 
 export const ToolbarButton: React.FC<ToolbarButtonProps> = ({ onClick }) => {
-  const [hovered, setHovered] = React.useState(false);
+  const floatingButtonClasses = getModule(
+    'game-ui/common/input/button/floating-icon-button.module.scss',
+    'classes'
+  ) as Record<string, string> | undefined;
 
   const handleClick = () => {
     //console.log('[ParkingFeeControl] Button clicked!');
     onClick();
   };
 
-  const currentStyle: React.CSSProperties = {
-    ...buttonStyle,
-    backgroundColor: hovered ? 'var(--accentColorNormal-hover)' : 'var(--accentColorNormal)',
-  };
-
   return (
-    <div
-      style={currentStyle}
+    <button
+      type="button"
+      className={floatingButtonClasses?.button}
+      style={buttonStyle}
       onClick={handleClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       title="Parking Fee Configuration"
     >
       <ParkingIcon />
-    </div>
+    </button>
   );
 };

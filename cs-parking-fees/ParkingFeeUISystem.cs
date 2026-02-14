@@ -239,10 +239,10 @@ namespace ParkingFeeControl.UI
                 var modCategory = Mod.Config.Categories.FirstOrDefault(c => string.Equals(c.Type, ParkingFeeConfig.DistrictsCategoryType, StringComparison.OrdinalIgnoreCase));
                 var currentKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 bool changed = false;
-
                 foreach (var district in districts)
                 {
-                    var key = ParkingFeeConfig.GetDistrictKey(district);
+                    var displayName = GetDistrictDisplayName(district);
+                    var key = ParkingFeeConfig.GetDistrictKey(displayName);
                     currentKeys.Add(key);
 
                     int fee = category.DefaultFee;
@@ -263,7 +263,7 @@ namespace ParkingFeeControl.UI
                     result.Add(new ParkingFeeUIData.PrefabData
                     {
                         name = key,
-                        displayName = GetDistrictDisplayName(district),
+                        displayName = displayName,
                         thumbnail = DistrictPrefabIconPath,
                         fee = fee
                     });
