@@ -1,14 +1,14 @@
 # About
 ⚠️ Currently in BETA ⚠️ 
 
-Parking Fee Control is a mod that lets you manage parking fees for buildings, helping you keep rates always up-to-date and exactly as you want!
+Parking Fee Control is a mod that lets you manage parking fees for buildings and districts, helping you keep rates always up-to-date and exactly as you want!
 
 After installing it, you'll see a Parking icon on the top-left side of the screen. Click it to access the fees screen.
 
 Features:
 * Customize fees for multiple **parking lots** and **districts** (values range from 0 to 50). Fees can be applied instantly via the configuration panel and also periodically, as configured.
 * Periodically updates the fees for parking lots added to the map during gameplay, keeping everything consistent.
-* You can ignore fee application for parking lots that have the following tags in their name: [nofee], [npf], or |npf|. Just add one of these tags to the building's name.
+* You can ignore fee application for parking lots that have the following tags in their name: **[nofee], [npf], or |npf|** (configurable). Just add one of these tags to the building's name.
 * Since this mod does not alter your save, it can be added or removed at any time without issues.
 * Compatible with Vanilla parking lots and many other mods (see list below).
 * Supported languages: en-us, pt-br, de-DE (contribute with translations on the project's GitHub)
@@ -19,6 +19,7 @@ Parking Fee Control is currently in BETA. Bugs may occur; fee application perfor
 ## Technical Notes
 1. Since it was difficult to find an automatic way to detect parking lot mods, I chose a simpler approach: mods are mapped directly in the code. If your favorite parking mod is not yet supported, just open a pull request or an issue on the project's GitHub. The README contains all necessary information.
 2. Periodic updates may be removed in the future if I find a way to intercept the placement of parking lots and change the default fee before the player places them on the map. Still working on it;
+3. District fees are persisted based on the district name; If you rename it, the fee will reset to the category default, as I couldn't find a fixed internal ID for it;
 
 ----
 

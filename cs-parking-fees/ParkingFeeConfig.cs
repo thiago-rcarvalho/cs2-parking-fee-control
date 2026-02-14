@@ -307,9 +307,14 @@ namespace ParkingFeeControl
         /// <summary>
         /// Build a stable key for a district entity.
         /// </summary>
-        public static string GetDistrictKey(Entity district)
+        public static string GetDistrictKey(string districtName)
         {
-            return $"{DistrictKeyPrefix}:{district.Index}:{district.Version}";
+            if (string.IsNullOrWhiteSpace(districtName))
+            {
+                return $"{DistrictKeyPrefix}:unknown";
+            }
+
+            return $"{DistrictKeyPrefix}:{districtName.Trim()}";
         }
 
         /// <summary>

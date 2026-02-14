@@ -394,7 +394,20 @@ namespace ParkingFeeControl
                         continue;
                     }
 
-                    string districtKey = ParkingFeeConfig.GetDistrictKey(districtEntity);
+                    string districtName = null;
+                    try
+                    {
+                        if (m_NameSystem != null)
+                        {
+                            districtName = m_NameSystem.GetRenderedLabelName(districtEntity);
+                        }
+                    }
+                    catch
+                    {
+                        districtName = null;
+                    }
+
+                    string districtKey = ParkingFeeConfig.GetDistrictKey(districtName ?? $"District #{districtEntity.Index}");
                     int targetFee = Mod.Config.GetParkingFeeForDistrictKey(districtKey);
                     bool disablePolicy = targetFee <= 0;
                     int effectiveFee = disablePolicy ? targetFee : Math.Min(50, Math.Max(1, targetFee));
