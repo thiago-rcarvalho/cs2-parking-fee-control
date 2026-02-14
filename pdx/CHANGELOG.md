@@ -1,2 +1,2 @@
-- District fees are persisted based on the district name; If you rename it, the fee will reset to the category default, as I couldn't find a fixed internal ID for it;
+- District fees are now persisted based on the district name due to the way the game works; If you rename it, the fee will reset to the category default, as I couldn't find a fixed internal ID for it yet;
 - Now compatible with Redesigned Top Buttons;

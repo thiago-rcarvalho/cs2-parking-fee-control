@@ -1,5 +1,5 @@
 # About
-⚠️ Currently in BETA ⚠️ 
+⚠️ Currently in BETA (please read the Technical Notes) ⚠️ 
 
 Parking Fee Control is a mod that lets you manage parking fees for buildings and districts, helping you keep rates always up-to-date and exactly as you want!
 
@@ -17,9 +17,9 @@ Features:
 Parking Fee Control is currently in BETA. Bugs may occur; fee application performance is still being validated, but so far no bottlenecks have been observed.
 
 ## Technical Notes
-1. Since it was difficult to find an automatic way to detect parking lot mods, I chose a simpler approach: mods are mapped directly in the code. If your favorite parking mod is not yet supported, just open a pull request or an issue on the project's GitHub. The README contains all necessary information.
-2. Periodic updates may be removed in the future if I find a way to intercept the placement of parking lots and change the default fee before the player places them on the map. Still working on it;
-3. District fees are persisted based on the district name; If you rename it, the fee will reset to the category default, as I couldn't find a fixed internal ID for it;
+1. District fees are persisted based on the district name due to the way the game works; If you rename it, the fee will reset to the category default, as I couldn't find a fixed internal ID for it yet;
+2. Since it was difficult to find an automatic way to detect parking lot mods, I chose a simpler approach: mods are mapped directly in the code. If your favorite parking mod is not yet supported, just open a pull request or an issue on the project's GitHub. The README contains all necessary information.
+3. Periodic updates may be removed in the future if I find a way to intercept the placement of parking lots and change the default fee before the player places them on the map. Still working on it;
 
 ----
 
