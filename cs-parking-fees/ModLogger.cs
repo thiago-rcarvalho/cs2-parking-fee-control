@@ -23,7 +23,7 @@ namespace ParkingFeeControl
         {
             if (Mod.Settings?.DebugLogging == true)
             {
-                Mod.Log?.Info(message);
+                Mod.Log?.Info($"{message}");
             }
         }
 
