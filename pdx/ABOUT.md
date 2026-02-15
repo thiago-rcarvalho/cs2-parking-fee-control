@@ -18,8 +18,8 @@ Parking Fee Control is currently in BETA. Bugs may occur; fee application perfor
 
 ## Technical Notes
 1. Since it was difficult to find an automatic way to detect parking lot mods, I chose a simpler approach: mods are mapped directly in the code. If your favorite parking mod is not yet supported, just open a pull request or an issue on the project's GitHub. The README contains all necessary information.
-2. Periodic updates may be removed in the future if I find a way to intercept the placement of parking lots and change the default fee before the player places them on the map. Still working on it;
-
+2. Periodic updates may be removed in the future if I find a way to intercept the placement of parking lots and change the default fee before the player places them on the map. Still working on it.
+3. Parking lot fees and district category fees are not persisted per save game. They are global. Not sure if this could become a problem, but let me know what you think.
 ----
 
 # Compatible MODS
