@@ -51,6 +51,24 @@ namespace ParkingFeeControl
             ModLogger.Info("============================================");
             ModLogger.Info("Parking Fee Control mod loading...");
             ModLogger.Info($"Mod version: {ModVersion}");
+            try
+            {
+                ModLogger.Info($"Game version: {Game.Version.current.fullVersion}");
+            }
+            catch (System.Exception ex)
+            {
+                ModLogger.Debug($"Could not read game version during load: {ex}");
+            }
+            try
+            {
+                var localeId = GameManager.instance?.localizationManager?.activeLocaleId;
+                if (!string.IsNullOrEmpty(localeId))
+                    ModLogger.Info($"Game language: {localeId}");
+            }
+            catch (System.Exception ex)
+            {
+                ModLogger.Debug($"Could not read active locale during load: {ex}");
+            }
             ModLogger.Info("============================================");
 
             // Get mod path from GameManager

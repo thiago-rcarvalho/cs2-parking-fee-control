@@ -122,6 +122,7 @@ namespace ParkingFeeControl.UI
     public partial class ParkingFeeUISystem : UISystemBase
     {
         private const string DistrictPrefabIconPath = "Media/Game/Policies/PaidParking.svg";
+        private const string DistrictEntityKeyPrefix = "district:";
 
         private ValueBinding<ParkingFeeUIData> _configBinding;
         private TriggerBinding<CategoryFeeUpdate> _updateCategoryFeeTrigger;
@@ -137,6 +138,12 @@ namespace ParkingFeeControl.UI
         private Dictionary<string, PrefabBase> _prefabByNameCache;
         private EntityQuery _districtQuery;
         private NameSystem _nameSystem;
+
+        /// <summary>
+        /// Maps Entity.Index to Entity for district fee lookups within the current session.
+        /// Rebuilt on each UI refresh. Not persisted — entity handles are session-stable.
+        /// </summary>
+        private Dictionary<int, Entity> _districtEntityMap = new Dictionary<int, Entity>();
 
         protected override void OnCreate()
         {
@@ -184,7 +191,7 @@ namespace ParkingFeeControl.UI
                 RefreshConfigFromMod
             ));
 
-            ModLogger.Info("[ParkingFeeControl] UI System initialized");
+            ModLogger.Info("UI System initialized");
         }
 
         private void LoadConfigFromMod()
@@ -225,9 +232,16 @@ namespace ParkingFeeControl.UI
             };
         }
 
+        /// <summary>
+        /// Builds UI data for all districts. Fee is read from the DistrictParkingFee
+        /// ECS component on each entity (persisted in the save file). Districts without
+        /// the component use the category default fee.
+        /// </summary>
         private List<ParkingFeeUIData.PrefabData> BuildDistrictPrefabData(ParkingFeeConfig.Category category)
         {
             var result = new List<ParkingFeeUIData.PrefabData>();
+            _districtEntityMap.Clear();
+
             if (_districtQuery == null)
             {
                 return result;
@@ -236,55 +250,27 @@ namespace ParkingFeeControl.UI
             var districts = _districtQuery.ToEntityArray(Allocator.Temp);
             try
             {
-                var modCategory = Mod.Config.Categories.FirstOrDefault(c => string.Equals(c.Type, ParkingFeeConfig.DistrictsCategoryType, StringComparison.OrdinalIgnoreCase));
-                var currentKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                bool changed = false;
                 foreach (var district in districts)
                 {
-                    var displayName = GetDistrictDisplayName(district);
-                    var key = ParkingFeeConfig.GetDistrictKey(displayName);
-                    currentKeys.Add(key);
+                    _districtEntityMap[district.Index] = district;
 
-                    int fee = category.DefaultFee;
-                    if (modCategory != null)
-                    {
-                        var entry = modCategory.Prefabs.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
-                        if (entry == null)
-                        {
-                            modCategory.Prefabs.Add(new ParkingFeeConfig.PrefabEntry { Name = key });
-                            changed = true;
-                        }
-                        else if (entry.Fee.HasValue)
-                        {
-                            fee = entry.Fee.Value;
-                        }
-                    }
+                    var displayName = GetDistrictDisplayName(district);
+                    var entityKey = $"{DistrictEntityKeyPrefix}{district.Index}";
+
+                    bool hasComponent = EntityManager.HasComponent<DistrictParkingFee>(district);
+                    int fee = hasComponent
+                        ? EntityManager.GetComponentData<DistrictParkingFee>(district).m_Fee
+                        : category.DefaultFee;
+
+                    ModLogger.Debug($"  [UI] District '{displayName}' (#{district.Index}): hasComponent={hasComponent}, fee=${fee}{(hasComponent ? "" : " (default)")}");
 
                     result.Add(new ParkingFeeUIData.PrefabData
                     {
-                        name = key,
+                        name = entityKey,
                         displayName = displayName,
                         thumbnail = DistrictPrefabIconPath,
                         fee = fee
                     });
-                }
-
-                if (modCategory != null)
-                {
-                    var toRemove = modCategory.Prefabs.Where(p => !currentKeys.Contains(p.Name)).ToList();
-                    if (toRemove.Count > 0)
-                    {
-                        foreach (var rem in toRemove)
-                        {
-                            modCategory.Prefabs.Remove(rem);
-                        }
-                        changed = true;
-                    }
-
-                    if (changed)
-                    {
-                        Mod.Config.Save();
-                    }
                 }
             }
             finally
@@ -304,9 +290,9 @@ namespace ParkingFeeControl.UI
                     return _nameSystem.GetRenderedLabelName(district);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore and fall back below
+                ModLogger.Debug($"Failed to resolve district display name for entity #{district.Index}: {ex}");
             }
 
             return $"District #{district.Index}";
@@ -321,11 +307,11 @@ namespace ParkingFeeControl.UI
                 LoadConfigFromMod();
                 NotifyConfigChanged();
 
-                ModLogger.Debug("[ParkingFeeControl] UI config refreshed on panel open");
+                ModLogger.Debug("UI config refreshed on panel open");
             }
             catch (Exception ex)
             {
-                ModLogger.Warn($"[ParkingFeeControl] Failed to refresh UI config: {ex.Message}");
+                ModLogger.Warn($"Failed to refresh UI config: {ex.Message}");
             }
         }
 
@@ -334,11 +320,11 @@ namespace ParkingFeeControl.UI
             try
             {
                 _policySystem?.ApplyNow(resetTimer: true);
-                ModLogger.Debug("[ParkingFeeControl] Apply now requested");
+                ModLogger.Debug("Apply now requested");
             }
             catch (Exception ex)
             {
-                ModLogger.Warn($"[ParkingFeeControl] Failed to apply fees immediately: {ex.Message}");
+                ModLogger.Warn($"Failed to apply fees immediately: {ex.Message}");
             }
         }
 
@@ -371,79 +357,108 @@ namespace ParkingFeeControl.UI
         private void UpdateCategoryFee(CategoryFeeUpdate update)
         {
             var category = _currentConfig.categories.FirstOrDefault(c => c.type == update.categoryType);
-            if (category != null)
+            if (category == null)
+                return;
+
+            float oldDefaultFee = category.defaultFee;
+
+            // Update category default fee
+            category.defaultFee = (float)Math.Round(update.newFee);
+
+            // Update all prefabs in this category maintaining the difference from category
+            foreach (var prefab in category.prefabs)
             {
-                float oldDefaultFee = category.defaultFee;
+                float difference = oldDefaultFee - prefab.fee;
+                float newFee = update.newFee - difference;
+                // Clamp between 0 and 50
+                newFee = Math.Max(0, Math.Min(50, newFee));
+                prefab.fee = (float)Math.Round(newFee);
+            }
 
-                // Update category default fee
-                category.defaultFee = (float)Math.Round(update.newFee);
+            NotifyConfigChanged();
 
-                // Update all prefabs in this category maintaining the difference from category
+            // Districts: persist fees to ECS components on the entity (saved with the game)
+            if (IsDistrictsCategory(update.categoryType))
+            {
                 foreach (var prefab in category.prefabs)
                 {
-                    float difference = oldDefaultFee - prefab.fee;
-                    float newFee = update.newFee - difference;
-                    // Clamp between 0 and 50
-                    newFee = Math.Max(0, Math.Min(50, newFee));
-                    prefab.fee = (float)Math.Round(newFee);
-                }
-
-                NotifyConfigChanged();
-                
-                var modCategory = Mod.Config.Categories.FirstOrDefault(c => c.Type == update.categoryType);
-                if (modCategory != null)
-                {
-                    modCategory.DefaultFee = (int)Math.Round(update.newFee);
-
-                    // Update prefabs in mod config maintaining the difference
-                    foreach (var modPrefab in modCategory.Prefabs)
+                    if (TryParseDistrictEntityIndex(prefab.name, out int entityIndex))
                     {
-                        if (modPrefab.Fee.HasValue)
-                        {
-                            float difference = oldDefaultFee - modPrefab.Fee.Value;
-                            float newFee = update.newFee - difference;
-                            // Clamp between 0 and 50
-                            newFee = Math.Max(0, Math.Min(50, newFee));
-                            modPrefab.Fee = (int)Math.Round(newFee);
-                        }
+                        SetDistrictFee(entityIndex, (int)Math.Round(prefab.fee));
                     }
                 }
 
-                // Save config after changes
+                // Save only the default fee to config (for newly created districts)
+                var districtCategory = Mod.Config.Categories.FirstOrDefault(c =>
+                    string.Equals(c.Type, ParkingFeeConfig.DistrictsCategoryType, StringComparison.OrdinalIgnoreCase));
+                if (districtCategory != null)
+                {
+                    districtCategory.DefaultFee = (int)Math.Round(update.newFee);
+                }
                 Mod.Config.Save();
-
-                // ModLogger.Info($"[ParkingFeeControl] Updated {update.categoryType} default fee to ${(int)Math.Round(update.newFee)}");
+                return;
             }
+
+            // Non-district categories: persist per-prefab fees to JSON config
+            var modCategory = Mod.Config.Categories.FirstOrDefault(c => c.Type == update.categoryType);
+            if (modCategory != null)
+            {
+                modCategory.DefaultFee = (int)Math.Round(update.newFee);
+
+                // Update prefabs in mod config maintaining the difference
+                foreach (var modPrefab in modCategory.Prefabs)
+                {
+                    if (modPrefab.Fee.HasValue)
+                    {
+                        float difference = oldDefaultFee - modPrefab.Fee.Value;
+                        float newFee = update.newFee - difference;
+                        // Clamp between 0 and 50
+                        newFee = Math.Max(0, Math.Min(50, newFee));
+                        modPrefab.Fee = (int)Math.Round(newFee);
+                    }
+                }
+            }
+
+            // Save config after changes
+            Mod.Config.Save();
         }
 
         private void UpdatePrefabFee(PrefabFeeUpdate update)
         {
             var category = _currentConfig.categories.FirstOrDefault(c => c.type == update.categoryType);
-            if (category != null)
+            if (category == null)
+                return;
+
+            var prefab = category.prefabs.FirstOrDefault(p => p.name == update.prefabName);
+            if (prefab == null)
+                return;
+
+            prefab.fee = (float)Math.Round(update.newFee);
+            NotifyConfigChanged();
+
+            // Districts: persist fee to ECS component on the entity (saved with the game)
+            if (IsDistrictsCategory(update.categoryType))
             {
-                var prefab = category.prefabs.FirstOrDefault(p => p.name == update.prefabName);
-                if (prefab != null)
+                if (TryParseDistrictEntityIndex(update.prefabName, out int entityIndex))
                 {
-                    prefab.fee = (float)Math.Round(update.newFee);
+                    SetDistrictFee(entityIndex, (int)Math.Round(update.newFee));
+                }
+                return;
+            }
 
-                    NotifyConfigChanged();
-
-                    var modCategory = Mod.Config.Categories.FirstOrDefault(c => c.Type == update.categoryType);
-                    if (modCategory != null)
-                    {
-                        var modPrefab = modCategory.Prefabs.FirstOrDefault(p => p.Name == update.prefabName);
-                        if (modPrefab != null)
-                        {
-                            modPrefab.Fee = (int)Math.Round(update.newFee);
-                        }
-                    }
-
-                    // Save config after changes
-                    Mod.Config.Save();
-
-                    // ModLogger.Info($"[ParkingFeeControl] Updated {update.categoryType}/{update.prefabName} fee to ${update.newFee}");
+            // Non-district: persist to JSON config
+            var modCategory = Mod.Config.Categories.FirstOrDefault(c => c.Type == update.categoryType);
+            if (modCategory != null)
+            {
+                var modPrefab = modCategory.Prefabs.FirstOrDefault(p => p.Name == update.prefabName);
+                if (modPrefab != null)
+                {
+                    modPrefab.Fee = (int)Math.Round(update.newFee);
                 }
             }
+
+            // Save config after changes
+            Mod.Config.Save();
         }
 
         // SaveConfig method intentionally removed; saving is handled via Mod.Config.Save()
@@ -479,8 +494,9 @@ namespace ParkingFeeControl.UI
 
                 return ToFriendlyName(prefabName);
             }
-            catch
+            catch (Exception ex)
             {
+                ModLogger.Debug($"Failed to resolve localized display name for prefab '{prefabName}': {ex}");
                 return ToFriendlyName(prefabName);
             }
         }
@@ -519,8 +535,9 @@ namespace ParkingFeeControl.UI
                 }
                 return fallbackIcon;
             }
-            catch
+            catch (Exception ex)
             {
+                ModLogger.Debug($"Failed to resolve thumbnail for prefab '{prefabName}': {ex}");
                 return GetDefaultFallbackIcon();
             }
         }
@@ -608,11 +625,50 @@ namespace ParkingFeeControl.UI
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // If reflection fails, keep cache empty and fall back to raw names
+                ModLogger.Debug($"Failed to build prefab cache via reflection: {ex}");
             }
         }
+
+        // ── District ECS helpers ──────────────────────────────────────────────
+
+        private static bool IsDistrictsCategory(string categoryType)
+        {
+            return string.Equals(categoryType, ParkingFeeConfig.DistrictsCategoryType, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool TryParseDistrictEntityIndex(string key, out int entityIndex)
+        {
+            entityIndex = 0;
+            if (string.IsNullOrEmpty(key) || !key.StartsWith(DistrictEntityKeyPrefix, StringComparison.OrdinalIgnoreCase))
+                return false;
+            return int.TryParse(key.Substring(DistrictEntityKeyPrefix.Length), out entityIndex);
+        }
+
+        /// <summary>
+        /// Writes or updates the DistrictParkingFee component on a district entity.
+        /// </summary>
+        private void SetDistrictFee(int entityIndex, int fee)
+        {
+            if (!_districtEntityMap.TryGetValue(entityIndex, out var entity))
+                return;
+
+            string districtName = GetDistrictDisplayName(entity);
+            var feeComponent = new DistrictParkingFee(fee);
+            if (EntityManager.HasComponent<DistrictParkingFee>(entity))
+            {
+                EntityManager.SetComponentData(entity, feeComponent);
+                ModLogger.Debug($"  District '{districtName}' (#{entityIndex}): updated fee to ${fee}");
+            }
+            else
+            {
+                EntityManager.AddComponentData(entity, feeComponent);
+                ModLogger.Debug($"  District '{districtName}' (#{entityIndex}): added component with fee ${fee}");
+            }
+        }
+
+        // ── Shared UI helpers ────────────────────────────────────────────────
 
         private static string ToFriendlyName(string prefabName)
         {

@@ -214,8 +214,9 @@ namespace ParkingFeeControl
                             prefabName = prefabBase.name ?? "Unnamed";
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ModLogger.Debug($"Failed to resolve prefab name for building #{buildingEntity.Index}: {ex}");
                         prefabName = $"Prefab#{prefabData.m_Index}";
                     }
                     
@@ -233,8 +234,9 @@ namespace ParkingFeeControl
                             customName = cn;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ModLogger.Debug($"Failed to read custom name for building #{buildingEntity.Index}: {ex}");
                         customName = null;
                     }
 
@@ -356,7 +358,8 @@ namespace ParkingFeeControl
 
         /// <summary>
         /// Modify parking policies on all districts.
-        /// Applies configured fees periodically.
+        /// Reads the fee from the DistrictParkingFee ECS component (persisted in the save file).
+        /// Falls back to the districts category default fee when the component is absent.
         /// </summary>
         private void ModifyDistrictPolicies()
         {
@@ -370,11 +373,26 @@ namespace ParkingFeeControl
             int modifiedPolicies = 0;
             int districtsWithPolicies = 0;
 
+            int defaultFee = Mod.Config.GetDistrictDefaultFee();
+
             try
             {
                 foreach (var districtEntity in districts)
                 {
                     districtsFound++;
+
+                    // Resolve display name for logging
+                    string districtName = null;
+                    try
+                    {
+                        if (m_NameSystem != null)
+                            districtName = m_NameSystem.GetRenderedLabelName(districtEntity);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModLogger.Debug($"Failed to resolve district display name for entity #{districtEntity.Index}: {ex}");
+                    }
+                    districtName = districtName ?? $"Entity#{districtEntity.Index}";
 
                     string customName = null;
                     try
@@ -384,31 +402,26 @@ namespace ParkingFeeControl
                             customName = cn;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ModLogger.Debug($"Failed to read custom name for district #{districtEntity.Index}: {ex}");
                         customName = null;
                     }
 
                     if (!string.IsNullOrEmpty(customName) && Mod.Settings.ShouldIgnoreByName(customName))
                     {
+                        ModLogger.Debug($"  District '{districtName}' (#{districtEntity.Index}): skipped (ignore tag in custom name)");
                         continue;
                     }
 
-                    string districtName = null;
-                    try
-                    {
-                        if (m_NameSystem != null)
-                        {
-                            districtName = m_NameSystem.GetRenderedLabelName(districtEntity);
-                        }
-                    }
-                    catch
-                    {
-                        districtName = null;
-                    }
+                    // Read fee from ECS component (persisted in save) or fall back to category default
+                    bool hasComponent = EntityManager.HasComponent<DistrictParkingFee>(districtEntity);
+                    int targetFee = hasComponent
+                        ? EntityManager.GetComponentData<DistrictParkingFee>(districtEntity).m_Fee
+                        : defaultFee;
 
-                    string districtKey = ParkingFeeConfig.GetDistrictKey(districtName ?? $"District #{districtEntity.Index}");
-                    int targetFee = Mod.Config.GetParkingFeeForDistrictKey(districtKey);
+                    ModLogger.Debug($"  District '{districtName}' (#{districtEntity.Index}): hasComponent={hasComponent}, fee=${targetFee}{(hasComponent ? "" : " (category default)")}");
+
                     bool disablePolicy = targetFee <= 0;
                     int effectiveFee = disablePolicy ? targetFee : Math.Min(50, Math.Max(1, targetFee));
 

@@ -15,7 +15,6 @@ namespace ParkingFeeControl
     public class ParkingFeeConfig
     {
         public const string DistrictsCategoryType = "districts";
-        private const string DistrictKeyPrefix = "district";
         public class PrefabEntry
         {
             [JsonProperty("name")]
@@ -286,35 +285,13 @@ namespace ParkingFeeControl
         }
 
         /// <summary>
-        /// Get the parking fee for a district by its key. Falls back to category default.
+        /// Get the default parking fee for the districts category.
+        /// Used as fallback for districts without a DistrictParkingFee ECS component.
         /// </summary>
-        public int GetParkingFeeForDistrictKey(string districtKey)
+        public int GetDistrictDefaultFee()
         {
-            if (string.IsNullOrWhiteSpace(districtKey))
-                return 0;
-
             var category = Categories.FirstOrDefault(c => string.Equals(c.Type, DistrictsCategoryType, StringComparison.OrdinalIgnoreCase));
-            if (category == null)
-                return 0;
-
-            var match = category.Prefabs.FirstOrDefault(p => string.Equals(p.Name, districtKey, StringComparison.OrdinalIgnoreCase));
-            if (match != null && match.Fee.HasValue)
-                return match.Fee.Value;
-
-            return category.DefaultFee;
-        }
-
-        /// <summary>
-        /// Build a stable key for a district entity.
-        /// </summary>
-        public static string GetDistrictKey(string districtName)
-        {
-            if (string.IsNullOrWhiteSpace(districtName))
-            {
-                return $"{DistrictKeyPrefix}:unknown";
-            }
-
-            return $"{DistrictKeyPrefix}:{districtName.Trim()}";
+            return category?.DefaultFee ?? 0;
         }
 
         /// <summary>
