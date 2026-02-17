@@ -1,0 +1,50 @@
+{
+  "Options.SECTION[ParkingFeeControl.ParkingFeeControl.Mod]": "停车收费管理",
+  "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.General]": "常规设置",
+  "Options.GROUP[ParkingFeeControl.ParkingFeeControl.Mod.About]": "关于",
+
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "启用",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "调试日志",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "更新频率",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "忽略标签",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Version]": "版本",
+
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Enabled]": "启用或禁用停车收费管理系统。",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.DebugLogging]": "启用调试日志以进行故障排除。",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes]": "建筑物停车费的更新频率。",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTag]": "名称中包含此标签的建筑物将被忽略。",
+  "Options.OPTION_DESCRIPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.Version]": "当前模组版本。",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Nofee]": "[nofee]",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.Npf]": "[npf]",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.IgnoreTagType.PipeNpf]": "|npf|",
+
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes1]": "1分钟",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes3]": "3分钟",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes5]": "5分钟",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes10]": "10分钟",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes15]": "15分钟",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes30]": "30分钟",
+  "Options.OPTION[ParkingFeeControl.ParkingFeeControl.Mod.ModSettings.UpdateFrequencyMinutes.Minutes60]": "60分钟",
+
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes1]": "1分钟",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes3]": "3分钟",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes5]": "5分钟",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes10]": "10分钟",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes15]": "15分钟",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes30]": "30分钟",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.UPDATEFREQUENCY[Minutes60]": "60分钟",
+
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.IGNORETAGTYPE[Nofee]": "[nofee]",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.IGNORETAGTYPE[Npf]": "[npf]",
+  "Options.ParkingFeeControl.ParkingFeeControl.Mod.IGNORETAGTYPE[PipeNpf]": "|npf|",
+
+  "ParkingFeeControl[PanelTitle]": "停车费",
+  "ParkingFeeControl[Car]": "汽车停车",
+  "ParkingFeeControl[Bicycle]": "自行车停车",
+  "ParkingFeeControl[Motorcycle]": "摩托车停车",
+  "ParkingFeeControl[Districts]": "区域",
+  "ParkingFeeControl[Type]": "类型",
+  "ParkingFeeControl[FeeRate]": "费率",
+  "ParkingFeeControl[Fee]": "费用",
+  "ParkingFeeControl[ApplyNow]": "立即应用"
+}
