@@ -1,1 +1,1 @@
-- Improved district fee persistence: won't reset a district fee if renamed.
+- Added support to Simplified Chinese, thanks to @AriadusTT

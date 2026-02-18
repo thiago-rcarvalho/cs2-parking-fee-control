@@ -15,7 +15,7 @@ Translations are stored in JSON files inside the `cs-parking-fees/Locale/` folde
 
 ### Supported Languages
 
-> <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg" width="20"/> en-US | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/BR.svg" width="20"/> pt-BR | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/DE.svg" width="20"/> de-DE (by @AndyStgt89)
+> <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg" width="20"/> en-US | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/BR.svg" width="20"/> pt-BR | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/DE.svg" width="20"/> de-DE (by @AndyStgt89) | <img src="https://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg" width="20"/> zh-HANS (by @AriadusTT)
 
 ## Adding Compatibility for Other Mods
 
