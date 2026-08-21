@@ -1,6 +1,7 @@
 {
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "license": "GPL-3.0-or-later",
   "engines": {
     "node": ">=18"
   },

@@ -64,3 +64,19 @@ If you are using Linux, use the `compile.sh` script. But if you are using Window
 **Publish**
 
 Publish can only be made on Windows through the IDE publish menu.
+
+## Acknowledgments
+
+This mod was developed using as reference the excellent mods from these amazing modders: **yenyang, Bruceyboy24804, franzvz, TDW, DanielVNZ, Triton Supreme**.
+
+Thank you for your work in the CS2 community ❤️
+
+## License
+
+Copyright (C) 2026 thiago-rcarvalho
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](LICENSE) for more details.
+
+This project incorporates a small amount of third-party MIT-licensed code; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) for details.

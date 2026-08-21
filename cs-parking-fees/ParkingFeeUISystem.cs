@@ -1,3 +1,18 @@
+// This file is part of Parking Fee Control mod.
+// Copyright (C) 2026 thiago-rcarvalho
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using Colossal.UI.Binding;
 using Game.UI;
 using Game.UI.InGame;
@@ -469,76 +484,105 @@ namespace ParkingFeeControl.UI
         }
 
         /// <summary>
-        /// Gets the localized display name for a prefab, similar to FindIt-CSII mod.
-        /// Tries different prefab types and uses the game's localization system.
+        /// Gets the localized display name for a prefab, falling back to a
+        /// friendly rendering of the raw prefab name when no localization entry exists.
         /// </summary>
         /// <param name="prefabName">The internal prefab name</param>
         /// <returns>The localized display name, or the original name if localization fails</returns>
         private string GetDisplayName(string prefabName)
         {
+            var prefabBase = SafeResolvePrefab(prefabName);
+            if (prefabBase == null)
+            {
+                return ToFriendlyName(prefabName);
+            }
+
+            var localizedTitle = TryGetLocalizedTitle(prefabBase);
+            return localizedTitle ?? ToFriendlyName(prefabBase.name);
+        }
+
+        private string TryGetLocalizedTitle(PrefabBase prefabBase)
+        {
             try
             {
-                var prefabBase = TryResolvePrefabByName(prefabName);
-                if (prefabBase != null)
-                {
-                    _prefabUISystem.GetTitleAndDescription(_prefabSystem.GetEntity(prefabBase), out var titleId, out var _);
+                var entity = _prefabSystem.GetEntity(prefabBase);
+                _prefabUISystem.GetTitleAndDescription(entity, out var titleId, out _);
 
-                    if (GameManager.instance.localizationManager.activeDictionary.TryGetValue(titleId, out var name)
-                        && !string.IsNullOrWhiteSpace(name))
-                    {
-                        return name;
-                    }
-
-                    return ToFriendlyName(prefabBase.name);
-                }
-
-                return ToFriendlyName(prefabName);
+                var dictionary = GameManager.instance.localizationManager.activeDictionary;
+                return dictionary.TryGetValue(titleId, out var title) && !string.IsNullOrWhiteSpace(title)
+                    ? title
+                    : null;
             }
             catch (Exception ex)
             {
-                ModLogger.Debug($"Failed to resolve localized display name for prefab '{prefabName}': {ex}");
-                return ToFriendlyName(prefabName);
+                ModLogger.Debug($"Failed to resolve localized display name for prefab '{prefabBase.name}': {ex}");
+                return null;
             }
         }
 
         /// <summary>
-        /// Gets the thumbnail image path for a prefab using the game's ImageSystem.
-        /// Similar to how FindIt-CSII displays specific prefab icons.
+        /// Gets the thumbnail image path for a prefab using the game's ImageSystem,
+        /// falling back to the prefab group icon and finally to a mod-provided icon.
         /// </summary>
         /// <param name="prefabName">The internal prefab name</param>
-        /// <returns>The thumbnail image path, or empty string if not found</returns>
+        /// <returns>The thumbnail image path, or the default fallback icon if not found</returns>
         private string GetThumbnail(string prefabName)
+        {
+            var defaultIcon = GetDefaultFallbackIcon();
+
+            var prefabBase = SafeResolvePrefab(prefabName);
+            if (prefabBase == null)
+            {
+                return defaultIcon;
+            }
+
+            return TryGetPrefabThumbnail(prefabBase) ?? TryGetPrefabGroupIcon(prefabBase) ?? defaultIcon;
+        }
+
+        private string TryGetPrefabThumbnail(PrefabBase prefabBase)
         {
             try
             {
-                var fallbackIcon = GetDefaultFallbackIcon();
-                var prefabBase = TryResolvePrefabByName(prefabName);
-                if (prefabBase != null)
-                {
-                    var thumbnail = ImageSystem.GetThumbnail(prefabBase);
-                    if (!string.IsNullOrEmpty(thumbnail) && !IsPlaceholderThumbnail(thumbnail))
-                    {
-                        return thumbnail;
-                    }
-
-                    if (_imageSystem != null)
-                    {
-                        var entity = _prefabSystem.GetEntity(prefabBase);
-                        var groupIcon = _imageSystem.GetGroupIcon(entity);
-                        if (!string.IsNullOrEmpty(groupIcon))
-                        {
-                            return groupIcon;
-                        }
-                    }
-
-                    return fallbackIcon;
-                }
-                return fallbackIcon;
+                var thumbnail = ImageSystem.GetThumbnail(prefabBase);
+                return !string.IsNullOrEmpty(thumbnail) && !IsPlaceholderThumbnail(thumbnail) ? thumbnail : null;
             }
             catch (Exception ex)
             {
-                ModLogger.Debug($"Failed to resolve thumbnail for prefab '{prefabName}': {ex}");
-                return GetDefaultFallbackIcon();
+                ModLogger.Debug($"Failed to resolve thumbnail for prefab '{prefabBase.name}': {ex}");
+                return null;
+            }
+        }
+
+        private string TryGetPrefabGroupIcon(PrefabBase prefabBase)
+        {
+            if (_imageSystem == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                var entity = _prefabSystem.GetEntity(prefabBase);
+                var groupIcon = _imageSystem.GetGroupIcon(entity);
+                return !string.IsNullOrEmpty(groupIcon) ? groupIcon : null;
+            }
+            catch (Exception ex)
+            {
+                ModLogger.Debug($"Failed to resolve group icon for prefab '{prefabBase.name}': {ex}");
+                return null;
+            }
+        }
+
+        private PrefabBase SafeResolvePrefab(string prefabName)
+        {
+            try
+            {
+                return TryResolvePrefabByName(prefabName);
+            }
+            catch (Exception ex)
+            {
+                ModLogger.Debug($"Failed to resolve prefab '{prefabName}': {ex}");
+                return null;
             }
         }
 
