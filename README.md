@@ -1,10 +1,6 @@
-**Looking for a New Maintainer**
+**This mod got a new home**
 
-*Hey guys,*
-
-*Unfortunately, I've gotten pretty frustrated with the game over the last few months, to the point where I uninstalled it. Performance is so bad on my PC that I can barely make any progress with a city of more than 30k citizens.*
-
-*If you're interested in taking it over, please contact me through the Issues page.*
+*NOW BEING MANTAINED AT: https://github.com/kpgocek/parking-fee-control*
 
 ---
 
